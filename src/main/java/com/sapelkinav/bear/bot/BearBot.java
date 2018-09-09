@@ -10,6 +10,7 @@ import com.sapelkinav.bear.service.BearService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
+import org.telegram.abilitybots.api.bot.AbilityWebhookBot;
 import org.telegram.abilitybots.api.objects.*;
 import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
@@ -31,7 +32,7 @@ import java.util.function.Consumer;
 
 
 @Component
-public class BearBot extends AbilityBot {
+public class BearBot extends AbilityWebhookBot {
 
 
     private final BearBotConfiguration bearBotConfiguration;
@@ -40,8 +41,7 @@ public class BearBot extends AbilityBot {
     @Autowired
     public BearBot(BearBotConfiguration bearBotConfiguration, BearService bearService) {
         super(bearBotConfiguration.getToken(),
-                bearBotConfiguration.getBotName(),
-                (DefaultBotOptions) bearBotConfiguration.getBotOptions());
+                bearBotConfiguration.getBotName(), bearBotConfiguration.getBaseUrl());
         this.bearBotConfiguration = bearBotConfiguration;
         this.bearService = bearService;
 

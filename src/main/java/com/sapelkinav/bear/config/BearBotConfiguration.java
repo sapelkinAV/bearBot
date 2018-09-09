@@ -14,12 +14,4 @@ public class BearBotConfiguration {
     private String token;
     private String baseUrl;
 
-    public BotOptions getBotOptions(){
-        DefaultBotOptions defaultBotOptions = new DefaultBotOptions();
-        if(baseUrl != null){
-            defaultBotOptions.setBaseUrl(this.baseUrl);
-        }
-        return defaultBotOptions;
-    }
-
 }
