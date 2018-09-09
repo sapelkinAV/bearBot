@@ -9,6 +9,8 @@ import com.sapelkinav.bear.model.Request;
 import com.sapelkinav.bear.service.BearService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.telegram.abilitybots.api.bot.AbilityBot;
+import org.telegram.abilitybots.api.objects.*;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -23,9 +25,15 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
+
+import static org.graalvm.compiler.nodes.java.RegisterFinalizerNode.register;
+import static org.telegram.abilitybots.api.objects.Locality.ALL;
+import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
+import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
 
 @Component
-public class BearBot extends TelegramLongPollingCommandBot {
+public class BearBot extends AbilityBot {
 
 
     private final BearBotConfiguration bearBotConfiguration;
@@ -33,39 +41,82 @@ public class BearBot extends TelegramLongPollingCommandBot {
 
     @Autowired
     public BearBot(BearBotConfiguration bearBotConfiguration, BearService bearService) {
-        super(bearBotConfiguration.getBotName());
+        super(bearBotConfiguration.getToken(),bearBotConfiguration.getBotName());
         this.bearBotConfiguration = bearBotConfiguration;
         this.bearService = bearService;
 
-        register(new StartCommand());
-        register(new RandomCommand(bearService));
+    }
 
+    public Ability searchAbility(){
+        return Ability
+                .builder()
+                .name("search")
+                .privacy(PUBLIC)
+                .locality(ALL)
+                .input(1)
+                .action(messageContext -> sendImages(messageContext.chatId(),0,messageContext.firstArg())
+                )
+                .build();
+    }
+
+
+    public Ability defaultAbility() {
+        return Ability.builder()
+                .name(DEFAULT)
+                .flag(Flag.MESSAGE)
+                .privacy(PUBLIC)
+                .locality(ALL)
+                .input(0)
+                .action(messageContext -> {
+                            if (messageContext.update().hasMessage()) {
+                                Message message = messageContext.update().getMessage();
+                                String tags = message.getText();
+                                Long chatId = message.getChatId();
+                                sendImages(chatId, 0, tags);
+                            }
+                        }
+                        )
+                .build();
+    }
+
+    public Ability randomAbility(){
+        return Ability.builder()
+                .name("random")
+                .privacy(PUBLIC)
+                .locality(ALL)
+                .input(0)
+                .action(messageContext -> bearService
+                        .getRandomImages()
+                        .forEach(imageUrl ->
+                                sendImage(messageContext.chatId(),imageUrl))
+                )
+                .build();
+    }
+
+
+
+    public Reply callbackReply() {
+        // getChatId is a public utility function in rg.telegram.abilitybots.api.util.AbilityUtils
+        Consumer<Update> action = update -> {
+            CallbackQuery callbackQuery = update.getCallbackQuery();
+            Long chatId = callbackQuery.getMessage().getChatId();
+            try {
+                Request request = new ObjectMapper().readValue(callbackQuery.getData(), Request.class);
+                request.setPage(request.getPage() + 1);
+                sendImages(chatId, request.getPage(), request.getTags());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        };
+
+        return Reply.of(action, Flag.CALLBACK_QUERY);
     }
 
 
     @Override
-    public void processNonCommandUpdate(Update update) {
-        if (update.hasMessage()) {
-            Message message = update.getMessage();
-            String tags = message.getText();
-            Long chatId = message.getChatId();
-            sendImages(chatId, 0, tags);
-        }
-        else if (update.hasCallbackQuery()) {
-                CallbackQuery callbackQuery = update.getCallbackQuery();
-                Long chatId = callbackQuery.getMessage().getChatId();
-                try {
-                    Request request = new ObjectMapper().readValue(callbackQuery.getData(), Request.class);
-                    request.setPage(request.getPage() + 1);
-                    sendImages(chatId, request.getPage(), request.getTags());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-
-        }
-
+    public int creatorId() {
+        return 0;
+    }
 
     @Override
     public String getBotToken() {
@@ -94,28 +145,7 @@ public class BearBot extends TelegramLongPollingCommandBot {
     }
 
     private void sendImages(Long chatId, int page, String tags) {
-        bearService.searchImages(tags,page).forEach(imageUrl ->  {
-            if(imageUrl.endsWith(".gif")){
-                SendDocument sendDocument = new SendDocument();
-                sendDocument.setChatId(chatId);
-                sendDocument.setDocument(imageUrl);
-                try {
-                    execute(sendDocument);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }else{
-                SendPhoto sendPhoto = new SendPhoto();
-                sendPhoto.setChatId(chatId);
-                sendPhoto.setPhoto(imageUrl);
-                try {
-                    execute(sendPhoto);
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
+        bearService.searchImages(tags,page).forEach(imageUrl -> sendImage(chatId,imageUrl));
 
         try {
             SendMessage thereIsMoreMessage = new SendMessage(chatId,"There is more!");
@@ -124,6 +154,28 @@ public class BearBot extends TelegramLongPollingCommandBot {
             execute(thereIsMoreMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void sendImage(Long chatId, String imageUrl){
+        if(imageUrl.endsWith(".gif")){
+            SendDocument sendDocument = new SendDocument();
+            sendDocument.setChatId(chatId);
+            sendDocument.setDocument(imageUrl);
+            try {
+                execute(sendDocument);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }else{
+            SendPhoto sendPhoto = new SendPhoto();
+            sendPhoto.setChatId(chatId);
+            sendPhoto.setPhoto(imageUrl);
+            try {
+                execute(sendPhoto);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
         }
     }
 

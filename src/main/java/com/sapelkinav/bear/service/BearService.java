@@ -33,7 +33,7 @@ public class BearService {
         // Artificial delay of 1s for demonstration purposes
 
 
-        return DefaultImageBoards.RULE34.get(10).blocking().stream()
+        return DefaultImageBoards.RULE34.get(5).blocking().stream()
                 .map(Rule34Image::getURL).collect(Collectors.toList());
 
     }
