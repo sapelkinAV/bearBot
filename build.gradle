@@ -1,0 +1,42 @@
+buildscript {
+    ext {
+        springBootVersion = '2.0.4.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.sapelkinav'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 10
+
+repositories {
+    mavenCentral()
+    maven {
+        url  "https://dl.bintray.com/kodehawa/maven"
+    }
+
+}
+
+
+dependencies {
+    compile('org.springframework.boot:spring-boot-starter-actuator')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    runtime('org.springframework.boot:spring-boot-devtools')
+    compile 'net.kodehawa:imageboard-api:2.0.3_2'
+    compile "org.telegram:telegrambots-spring-boot-starter:4.1"
+    compile "org.telegram:telegrambotsextensions:4.1"
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    compileOnly('org.projectlombok:lombok')
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
+}
