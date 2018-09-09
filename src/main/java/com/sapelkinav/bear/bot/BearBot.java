@@ -27,10 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static org.graalvm.compiler.nodes.java.RegisterFinalizerNode.register;
-import static org.telegram.abilitybots.api.objects.Locality.ALL;
-import static org.telegram.abilitybots.api.objects.Privacy.PUBLIC;
-import static org.telegram.abilitybots.api.util.AbilityUtils.getChatId;
+
 
 @Component
 public class BearBot extends AbilityBot {
@@ -51,8 +48,8 @@ public class BearBot extends AbilityBot {
         return Ability
                 .builder()
                 .name("search")
-                .privacy(PUBLIC)
-                .locality(ALL)
+                .privacy(Privacy.PUBLIC)
+                .locality(Locality.ALL)
                 .input(1)
                 .action(messageContext -> sendImages(messageContext.chatId(),0,messageContext.firstArg())
                 )
@@ -64,8 +61,8 @@ public class BearBot extends AbilityBot {
         return Ability.builder()
                 .name(DEFAULT)
                 .flag(Flag.MESSAGE)
-                .privacy(PUBLIC)
-                .locality(ALL)
+                .privacy(Privacy.PUBLIC)
+                .locality(Locality.ALL)
                 .input(0)
                 .action(messageContext -> {
                             if (messageContext.update().hasMessage()) {
@@ -82,8 +79,8 @@ public class BearBot extends AbilityBot {
     public Ability randomAbility(){
         return Ability.builder()
                 .name("random")
-                .privacy(PUBLIC)
-                .locality(ALL)
+                .privacy(Privacy.PUBLIC)
+                .locality(Locality.ALL)
                 .input(0)
                 .action(messageContext -> bearService
                         .getRandomImages()
