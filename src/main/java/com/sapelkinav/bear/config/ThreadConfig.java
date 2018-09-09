@@ -1,4 +1,4 @@
-package com.sapelkinav.masturbear.config;
+package com.sapelkinav.bear.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

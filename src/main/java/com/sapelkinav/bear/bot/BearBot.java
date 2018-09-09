@@ -1,12 +1,12 @@
-package com.sapelkinav.masturbear.bot;
+package com.sapelkinav.bear.bot;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sapelkinav.masturbear.commands.RandomCommand;
-import com.sapelkinav.masturbear.commands.StartCommand;
-import com.sapelkinav.masturbear.config.BearBotConfiguration;
-import com.sapelkinav.masturbear.model.Request;
-import com.sapelkinav.masturbear.service.BearService;
+import com.sapelkinav.bear.commands.RandomCommand;
+import com.sapelkinav.bear.commands.StartCommand;
+import com.sapelkinav.bear.config.BearBotConfiguration;
+import com.sapelkinav.bear.model.Request;
+import com.sapelkinav.bear.service.BearService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
