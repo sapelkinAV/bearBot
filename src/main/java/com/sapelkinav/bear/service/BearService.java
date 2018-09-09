@@ -1,11 +1,9 @@
-package com.sapelkinav.masturbear.service;
+package com.sapelkinav.bear.service;
 
-import com.sapelkinav.masturbear.config.BearBotConfiguration;
 import net.kodehawa.lib.imageboards.DefaultImageBoards;
 import net.kodehawa.lib.imageboards.entities.impl.Rule34Image;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,7 +33,7 @@ public class BearService {
         // Artificial delay of 1s for demonstration purposes
 
 
-        return DefaultImageBoards.RULE34.get(10).blocking().stream()
+        return DefaultImageBoards.RULE34.get(5).blocking().stream()
                 .map(Rule34Image::getURL).collect(Collectors.toList());
 
     }

@@ -17,7 +17,7 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.sapelkinav'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 10
+sourceCompatibility = 8
 
 repositories {
     mavenCentral()
@@ -34,6 +34,7 @@ dependencies {
     runtime('org.springframework.boot:spring-boot-devtools')
     compile 'net.kodehawa:imageboard-api:2.0.3_2'
     compile "org.telegram:telegrambots-spring-boot-starter:4.1"
+    compile "org.telegram:telegrambots-abilities:4.1"
     compile "org.telegram:telegrambotsextensions:4.1"
     // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
     compileOnly('org.projectlombok:lombok')

@@ -1,4 +1,4 @@
-package com.sapelkinav.masturbear.model;
+package com.sapelkinav.bear.model;
 
 import lombok.Data;
 

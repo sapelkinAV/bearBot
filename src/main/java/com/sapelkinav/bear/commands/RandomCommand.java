@@ -1,6 +1,6 @@
-package com.sapelkinav.masturbear.commands;
+package com.sapelkinav.bear.commands;
 
-import com.sapelkinav.masturbear.service.BearService;
+import com.sapelkinav.bear.service.BearService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.extensions.bots.commandbot.commands.BotCommand;
