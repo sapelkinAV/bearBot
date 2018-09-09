@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.abilitybots.api.bot.AbilityBot;
 import org.telegram.abilitybots.api.objects.*;
+import org.telegram.telegrambots.bots.DefaultBotOptions;
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendDocument;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -38,7 +39,9 @@ public class BearBot extends AbilityBot {
 
     @Autowired
     public BearBot(BearBotConfiguration bearBotConfiguration, BearService bearService) {
-        super(bearBotConfiguration.getToken(),bearBotConfiguration.getBotName());
+        super(bearBotConfiguration.getToken(),
+                bearBotConfiguration.getBotName(),
+                (DefaultBotOptions) bearBotConfiguration.getBotOptions());
         this.bearBotConfiguration = bearBotConfiguration;
         this.bearService = bearService;
 
